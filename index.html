@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>RAD Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="js/components.js"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .portfolio-item {
+            position: relative;
+            width: 100%;
+            height: 16rem;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.5s ease;
+            transform-origin: center;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .portfolio-overlay span {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .portfolio-item:hover .portfolio-overlay span {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .portfolio-img {
+            width: 100%;
+            height: 16rem;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+            transform-origin: center;
+        }
+
+        .portfolio-item:hover .portfolio-img {
+            transform: scale(1.1);
+        }
+
+        .instagram-section {
+            height: 16rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.5rem;
+            border: 1px solid #f3f4f6;
+            background: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-4px);
+        }
+
+        .hover-link:hover {
+            color: #4bcdc9;
+        }
+
+        .page-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-content.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .initial-load-header {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+            animation: slideInHeader 0.6s ease-in-out forwards;
+        }
+
+        @keyframes slideInHeader {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .initial-load-main {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInMain 0.8s ease-in-out 0.2s forwards;
+        }
+
+        @keyframes slideInMain {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .initial-load-footer {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideInFooter 0.8s ease-in-out 0.4s forwards;
+        }
+
+        @keyframes slideInFooter {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .initial-load-item {
+            opacity: 0;
+            transform: scale(0.95);
+            animation: scaleInItem 0.7s ease-in-out forwards;
+        }
+
+        @keyframes scaleInItem {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-underline {
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #4bcdc9;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover .nav-underline {
+            width: 100%;
+        }
+
+        #mobile-menu.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-12 page-content"> <!-- Changed pt-24 to pt-28 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="portfolio-items">
+            <!-- Studio Description -->
+            <section class="md:col-span-2 bg-white p-8 rounded-lg border border-gray-100">
+                <p class="text-xs uppercase text-gray-400 tracking-widest mb-3">THE STUDIO</p>
+                <h1 class="text-3xl font-light leading-tight">
+                    Hi, We’re <strong class="font-bold">RAD</strong> Studio.
+                </h1>
+                <p class="mt-4 text-base font-light leading-relaxed max-w-md text-gray-600">
+                    A <strong class="font-semibold">creative-consultant</strong> crafting innovative solutions for
+                    residential, commercial, and public spaces.
+                </p>
+            </section>
+
+            <!-- Portfolio Items -->
+            <div id="portfolio-item-0"></div>
+            <div id="portfolio-item-1"></div>
+            <div id="portfolio-item-2"></div>
+            <div id="portfolio-item-3"></div>
+
+            <!-- Instagram Section 1 -->
+            <div id="instagram-1"></div>
+
+            <div id="portfolio-item-4"></div>
+
+            <!-- Instagram Section 2 -->
+            <div id="instagram-2"></div>
+
+            <div id="portfolio-item-5"></div>
+            <div id="portfolio-item-6"></div>
+            <div id="portfolio-item-7"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+</body>
+
+</html>

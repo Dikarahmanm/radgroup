@@ -1,0 +1,42 @@
+<header class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-10">
+    <div class="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-5">
+        <!-- Logo & Tagline -->
+        <div class="flex flex-col items-start">
+            <a href="index.html" class="flex items-center space-x-3 page-link">
+                <img alt="RAD logo" class="w-12 h-12 transition-transform duration-300 hover:scale-105"
+                    src="https://storage.googleapis.com/a1aa/image/51b14e01-1e7e-40c7-0b8e-42bc1a3a034e.jpg" />
+                <span class="text-base font-semibold tracking-wider text-gray-800">RAD</span>
+            </a>
+            <span class="text-xs font-light text-gray-500 mt-1">Creative Design Studio</span>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-10 text-sm font-medium text-gray-600">
+            <a class="nav-link relative hover:text-teal-500 transition-colors page-link" href="index.html">
+                WORKS
+                <span class="nav-underline"></span>
+            </a>
+            <a class="nav-link relative hover:text-teal-500 transition-colors page-link" href="contact.html">
+                CONTACT
+                <span class="nav-underline"></span>
+            </a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-sm w-full text-center py-6">
+        <a class="block py-3 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors page-link"
+            href="index.html">WORKS</a>
+        <a class="block py-3 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors page-link"
+            href="contact.html">CONTACT</a>
+    </nav>
+</header>
