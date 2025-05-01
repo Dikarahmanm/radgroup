@@ -2,15 +2,26 @@
 async function loadComponent(id, url, data = {}) {
   try {
     const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
     let content = await response.text();
     // Replace placeholders with data
     for (const [key, value] of Object.entries(data)) {
       content = content.replace(`{{${key}}}`, value);
     }
-    document.getElementById(id).innerHTML = content;
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerHTML = content;
+    } else {
+      console.warn(`Element with ID ${id} not found`);
+    }
+    return true;
   } catch (error) {
     console.error(`Error loading component ${url}:`, error);
-    document.getElementById(id).innerHTML = `<p>Error loading component</p>`;
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerHTML = `<p>Error loading component</p>`;
+    }
+    return false;
   }
 }
 
@@ -26,86 +37,117 @@ const portfolioData = [
   { alt: 'Modern white house with tree', src: 'https://storage.googleapis.com/a1aa/image/74f9bd4e-76b0-423d-43e0-93367e2568af.jpg', name: 'Nature Villa' }
 ];
 
+// Attach page link event listeners
+function attachPageLinkListeners() {
+  const links = document.querySelectorAll('.page-link');
+  links.forEach(link => {
+    // Remove existing listeners to prevent duplicates
+    link.removeEventListener('click', handlePageLinkClick);
+    link.addEventListener('click', handlePageLinkClick);
+  });
+}
+
+function handlePageLinkClick(e) {
+  e.preventDefault();
+  const href = e.currentTarget.getAttribute('href');
+  const pageContent = document.querySelector('.page-content');
+  if (pageContent) {
+    pageContent.classList.add('fade-out');
+    setTimeout(() => {
+      window.location.href = href;
+    }, 500); // Match fadeOut duration
+  } else {
+    window.location.href = href; // Fallback
+  }
+}
+
 // Load components and apply initial load animations
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Check if this is a fresh page load
   const isFreshLoad = !performance.getEntriesByType('navigation')[0].type.includes('navigate');
 
+  // Apply initial load animations
   if (isFreshLoad) {
-    document.getElementById('header').classList.add('initial-load-header');
-    document.querySelector('main').classList.add('initial-load-main');
-    document.getElementById('footer').classList.add('initial-load-footer');
-
-    if (document.getElementById('portfolio-items')) {
-      portfolioData.forEach((_, index) => {
-        const item = document.getElementById(`portfolio-item-${index}`);
-        if (item) item.classList.add('initial-load-item');
-      });
-      const instagram1 = document.getElementById('instagram-1');
-      const instagram2 = document.getElementById('instagram-2');
-      if (instagram1) instagram1.classList.add('initial-load-item');
-      if (instagram2) instagram2.classList.add('initial-load-item');
-    }
+    const header = document.getElementById('header');
+    const main = document.querySelector('main');
+    const footer = document.getElementById('footer');
+    if (header) header.classList.add('initial-load-header');
+    if (main) main.classList.add('initial-load-main');
+    if (footer) footer.classList.add('initial-load-footer');
   }
 
+  // Prepare promises for component loading
+  const loadPromises = [];
+
   // Load header
-  loadComponent('header', 'components/header.html').then(() => {
+  loadPromises.push(loadComponent('header', 'components/header.html').then(() => {
     // Mobile menu toggle
     const menuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
     if (menuBtn && mobileMenu) {
-      menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('active');
-      });
+      menuBtn.removeEventListener('click', toggleMobileMenu); // Prevent duplicates
+      menuBtn.addEventListener('click', toggleMobileMenu);
     }
-  });
+  }));
 
   // Load footer
-  loadComponent('footer', 'components/footer.html');
+  loadPromises.push(loadComponent('footer', 'components/footer.html'));
 
   // Load portfolio items (index.html only)
   if (document.getElementById('portfolio-items')) {
     portfolioData.forEach((item, index) => {
-      loadComponent(`portfolio-item-${index}`, 'components/portfolio-item.html', item).then(() => {
+      loadPromises.push(loadComponent(`portfolio-item-${index}`, 'components/portfolio-item.html', item).then(() => {
         if (isFreshLoad) {
           const itemElement = document.getElementById(`portfolio-item-${index}`);
           if (itemElement) itemElement.classList.add('initial-load-item');
         }
-      });
+      }));
     });
   }
 
   // Load Instagram sections (index.html only)
   if (document.getElementById('instagram-1')) {
-    loadComponent('instagram-1', 'components/instagram-section.html', {
+    loadPromises.push(loadComponent('instagram-1', 'components/instagram-section.html', {
       link: '#',
       text: 'We Now Have 35K+ Followers',
       followText: 'FOLLOW US'
     }).then(() => {
-      if (isFreshLoad) document.getElementById('instagram-1').classList.add('initial-load-item');
-    });
+      if (isFreshLoad) {
+        const instagram1 = document.getElementById('instagram-1');
+        if (instagram1) instagram1.classList.add('initial-load-item');
+      }
+    }));
   }
   if (document.getElementById('instagram-2')) {
-    loadComponent('instagram-2', 'components/instagram-section.html', {
+    loadPromises.push(loadComponent('instagram-2', 'components/instagram-section.html', {
       link: '#',
       text: "Our Principal's Social Media",
       followText: 'FOLLOW HIM'
     }).then(() => {
-      if (isFreshLoad) document.getElementById('instagram-2').classList.add('initial-load-item');
-    });
+      if (isFreshLoad) {
+        const instagram2 = document.getElementById('instagram-2');
+        if (instagram2) instagram2.classList.add('initial-load-item');
+      }
+    }));
   }
 
-  // Smooth page transition
-  setTimeout(() => {
-    document.querySelectorAll('.page-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = link.getAttribute('href');
-        document.querySelector('.page-content').classList.add('fade-out');
-        setTimeout(() => {
-          window.location.href = href;
-        }, 500);
-      });
-    });
-  }, 100);
+  // Wait for all components to load before attaching listeners
+  await Promise.all(loadPromises);
+
+  // Attach page link listeners
+  attachPageLinkListeners();
+
+  // Reattach listeners on DOM changes (for robustness)
+  const observer = new MutationObserver(() => {
+    attachPageLinkListeners();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 });
+
+// Mobile menu toggle function
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenu) {
+    mobileMenu.classList.toggle('active');
+  }
+}
